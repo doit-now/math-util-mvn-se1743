@@ -1,0 +1,33 @@
+name: MathUtility using Maven, CI (GitHub Actions) | © 2023 giáo.làng
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 19 - Mượn JDK cài vào Server bên Mỹ - Server Ubuntu GH cho mượn
+      uses: actions/setup-java@v3
+      with:
+        java-version: '19'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven - Đóng gói app thành .jar bên Server Mỹ
+      run: mvn -B package --file pom.xml
+
+    - name: Distribute jar-war file # Gửi file .jar .war đi đâu, CD nhảy vào ...
+      run: mkdir staging && cp target/*.jar staging # tạo thư mục staging chứa file .jar .war sau khi build      
+     
+    - name: Make hyperlink to jar-war file # Tạo hyperlink để download build 
+      uses: actions/upload-artifact@v1
+      with:
+        name: ban-gai.zip # Bản build .JAR .WAR đc nén lại thành file .zip để tải về
+        path: staging
+    
